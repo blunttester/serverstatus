@@ -17,6 +17,7 @@ class SrvStats(object):
         '''
         
     def cpu(self,appname):
+        self.appname = appname
         """Return float containing CPU -usage used by defined application name."""
         self.process = subprocess.Popen("ps -o pcpu -p `ps -ef | grep -i %s | grep -v grep |grep -v Users| awk '{ print $2 }'`" % self.appname,
                                         shell=True,

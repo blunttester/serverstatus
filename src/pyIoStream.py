@@ -24,6 +24,7 @@ class IoStream(object):
         
     def sendStream(self,stream,srv,port):
         import socket
+        
         self.stream = stream
         self.srv = srv
         self.port = port
@@ -31,6 +32,9 @@ class IoStream(object):
         s = socket.socket()
         s.connect((str(self.srv), int(self.port)))
         s.send(str(self.stream))
+        data = s.recv(1024)
+        print str(data)
+
         s.close()
         
     def readStreamFromFile(self,fname):
@@ -41,3 +45,28 @@ class IoStream(object):
         f.close()
         return stream
     
+    def writeStreamToMongo(self,top, *args, **kwargs):
+        import json
+        import pymongo
+        from bson.objectid import ObjectId
+        
+        self.top = top
+        
+        connection = pymongo.Connection()
+        
+        db = connection["serverstats"]
+        tops = db["top"]
+        
+        def json_list(list):
+            lst = []
+            d = {}
+            for pn in list:
+                d['top']=pn
+                lst.append(d)
+            return json.dumps(lst, separators=(',',':'))
+
+        print json_list(str(self.top))
+        
+        #tops.insert(json_list(self.top))
+
+        

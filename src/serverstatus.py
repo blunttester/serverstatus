@@ -32,11 +32,14 @@ else:
 
 # Do some actual work here
 myTop = srvstat.top()
+myCpu = srvstat.cpu('spotify')
 myOutput = iostream.writeStream(myTop, fname)
 myInput = iostream.readStreamFromFile(fname)
+myStoreTop = iostream.writeStreamToMongo(myTop)
+#myStream = iostream.sendStream(myCpu, 'localhost', 7878)
 myStream = iostream.sendStream(myTop, 'localhost', 7878)
-print str(myTop)
-print str(myInput).split()
+#print str(myTop)
+#print str(myInput).split()
 
 time.sleep(10)
 
