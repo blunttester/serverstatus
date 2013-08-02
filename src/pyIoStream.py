@@ -69,4 +69,11 @@ class IoStream(object):
         
         #tops.insert(json_list(self.top))
 
+    def writeStreamToSqlite(self,*args, **kwargs):
+        
+        self.stuff = str(args).split(',')
+        for x in xrange(len(self.stuff)):
+            print self.stuff[x]
+        
+        return 'DONE'
         
