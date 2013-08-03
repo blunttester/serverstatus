@@ -24,7 +24,11 @@ class SrvStats(object):
                                         stdout=subprocess.PIPE,
                                         )
         self.cpu = self.process.communicate()[0].split('\n')
-        return float(self.cpu[1])
+        
+        if len(self.cpu) == 2 :
+            return float(self.cpu[1])
+        else:
+            return "NO CPU INFO FOR " + str(self.appname)
     
     def top(self):
 
