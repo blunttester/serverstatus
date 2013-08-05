@@ -32,10 +32,11 @@ else:
 
 # Do some actual work here
 myTop = srvstat.top()
-myCpu = srvstat.cpu('spotify')
+myCpu = srvstat.cpu('sshd')
 myOutput = iostream.writeStream(myTop, fname)
 myInput = iostream.readStreamFromFile(fname)
 myStoreTop = iostream.writeStreamToSqlite(myTop)
+myAppMem = srvstat.mem('sshd')
 #myStream = iostream.sendStream(myCpu, 'localhost', 7878)
 #myStream = iostream.sendStream(myTop, 'localhost', 7878)
 #print str(myTop)
