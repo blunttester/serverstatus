@@ -33,7 +33,7 @@ class IoStream(object):
         s.connect((str(self.srv), int(self.port)))
         s.send(str(self.stream))
         data = s.recv(1024)
-        print str(data)
+        #print str(data)
 
         s.close()
         
@@ -65,7 +65,7 @@ class IoStream(object):
                 lst.append(d)
             return json.dumps(lst, separators=(',',':'))
 
-        print json_list(str(self.top))
+        #print json_list(str(self.top))
         
         #tops.insert(json_list(self.top))
 
@@ -74,7 +74,7 @@ class IoStream(object):
         self.stuff = str(args).split(',')
         for x in xrange(len(self.stuff)):
             column = self.stuff[x].split()
-            print str(column).replace('[', '').replace(']','').replace('\"', '').replace('\'', '')
+            #print str(column).replace('[', '').replace(']','').replace('\"', '').replace('\'', '')
             for n in xrange(len(column)):
                 print str(column[n])
 

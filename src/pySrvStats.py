@@ -72,6 +72,6 @@ class SrvStats(object):
                                         shell=True,
                                         stdout=subprocess.PIPE)
         self.appMem = self.meminfo.communicate()[0].split('\n')
-        print self.appMem
+        #print self.appMem
         return self.appMem            
         
