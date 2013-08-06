@@ -35,6 +35,8 @@ def createTable(myTop):
         myTable = '<tr>' + myTable + '</tr>'
         
     return myTable
+
+
 class ClockPage(Resource):
     isLeaf = True
     def render_GET(self, request):
