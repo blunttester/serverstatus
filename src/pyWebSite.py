@@ -42,7 +42,14 @@ class ClockPage(Resource):
     def render_GET(self, request):
         srvstats = SrvStats()
         myTable = createTable(srvstats.top())
-        return "<html><body><p>%s<p><table>%s</table></body></html>" % (time.ctime(),str(myTable))
+	myAppTable = srvstats.appTop('pyWebSite').split()
+	aTable = []
+	aTable.append('<tr>')
+	for x in range(len(myAppTable)):
+		aTable.append('<th>' + myAppTable[x] + '</th>')
+	aTable.append('</tr>')
+	myATable = ''.join(str(aTable).split(',')).replace('\'','').replace('[','').replace(']','')	
+        return "<html><body><p>%s<p><table>%s</table><table>%s</table></body></html>" % (time.ctime(),str(myTable),str(myATable))
 
 resource = ClockPage()
 factory = Site(resource)
