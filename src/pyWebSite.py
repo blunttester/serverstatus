@@ -12,7 +12,7 @@ from twisted.web.server import Site
 from twisted.web.resource import Resource
 from pySrvStats import *
 import time
-
+import json
 
 
 def createTable(myTop):
@@ -37,7 +37,7 @@ def createTable(myTop):
     return myTable
 
 
-class ClockPage(Resource):
+class TablePage(Resource):
     isLeaf = True
     def render_GET(self, request):
         srvstats = SrvStats()
@@ -51,7 +51,24 @@ class ClockPage(Resource):
 	myATable = ''.join(str(aTable).split(',')).replace('\'','').replace('[','').replace(']','')	
         return "<html><body><p>%s<p><table>%s</table><table>%s</table></body></html>" % (time.ctime(),str(myTable),str(myATable))
 
-resource = ClockPage()
+class JsonPage(Resource):
+
+    isLeaf = True
+    def render_GET(self, request):
+        srvstats = SrvStats()
+	myAppInfo = srvstats.appTop('pyWebSite')
+	#print myAppInfo
+	myString = 'u\"{ tstamp : \"%s\" , tdata : \"%s\" }\"' % (time.ctime(),str(myAppInfo))
+	#print myString
+	json_string = json.dumps(myString)
+	obj = json.loads(json_string)
+	#print obj
+	return str(obj)
+
+resource = TablePage()
+res2 = JsonPage()
 factory = Site(resource)
+factory2 = Site(res2)
 reactor.listenTCP(8880, factory)
+reactor.listenTCP(8888, factory2)
 reactor.run()
