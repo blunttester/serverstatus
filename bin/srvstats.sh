@@ -5,4 +5,4 @@ echo "on ports:"
 echo "8880 (for top information in HTML-table)" 
 echo "8888 (for application specific CPU information printed out per request as json -string)"
 
-../src/pyWebSite.py 2>&1
+../src/pyWebSite.py 1>&2
