@@ -1,9 +1,9 @@
 #!/usr/bin/python
-'''
-Created on Aug 5, 2013
-
-@author: janmatilainen
-'''
+#'''
+#Created on Aug 5, 2013
+#
+#@author: janmatilainen
+#'''
 
 if __name__ == '__main__':
     pass
@@ -15,6 +15,16 @@ from pySrvStats import *
 import time
 import json
 
+cfgFolder = '../conf/'
+cfgFile = cfgFolder+'conf.conf'
+appname = ''
+f = open(cfgFile,'r')
+for line in f:
+	confline = line.split(':')
+	if confline[0] == 'appname':
+		appname = str(confline[1])
+f.close()
+	
 
 def createTable(myTop):
 
@@ -43,7 +53,7 @@ class TablePage(Resource):
     def render_GET(self, request):
         srvstats = SrvStats()
         myTable = createTable(srvstats.top())
-	myAppTable = srvstats.appTop('pyWebSite').split()
+	myAppTable = srvstats.appTop(appname).split()
 	aTable = []
 	aTable.append('<tr>')
 	for x in range(len(myAppTable)):
@@ -57,7 +67,7 @@ class JsonPage(Resource):
     isLeaf = True
     def render_GET(self, request):
         srvstats = SrvStats()
-	myAppInfo = srvstats.appTop('pyWebSite')
+	myAppInfo = srvstats.appTop(appname)
 	#print myAppInfo
 	myString = 'u\"{ tstamp : \"%s\" , tdata : \"%s\" }\"' % (time.ctime(),str(myAppInfo))
 	#print myString
