@@ -25,16 +25,16 @@ class SrvStats(object):
                                         stdout=subprocess.PIPE,
                                         )
         self.cpu = self.process.communicate()[0].split('\n')
-        
-        if len(self.cpu) == 2 :
+        #print self.cpu
+        if len(self.cpu) >= 1 :
             return float(self.cpu[1])
         else:
             return "NO CPU INFO FOR " + str(self.appname)
     
     def top(self):
         """OS X TOP Uses different syntax and parameters than linux"""
-        #self.process = subprocess.Popen("top -stats pid,rsize,vsize,cpu,th,pstate,time,command -o cpu -O +rsize -s 2 -n 10 -l 2| grep -A10 PID",
-        self.process = subprocess.Popen("top -b -n 2 | grep -A10 PID",
+        self.process = subprocess.Popen("top -stats pid,rsize,vsize,cpu,th,pstate,time,command -o cpu -O +rsize -s 2 -n 10 -l 2| grep -A10 PID",
+#        self.process = subprocess.Popen("top -b -n 2 | grep -A10 PID",
                                         shell=True,
                                         stdout=subprocess.PIPE)
         self.top = self.process.communicate()[0].split('\n')
@@ -45,32 +45,53 @@ class SrvStats(object):
         
     def appTop(self,appname):
         self.appname = appname
-        self.app = subprocess.Popen("ps -ef | grep -i %s | grep -v grep |grep -v Users| awk '{ print $2 }'" % self.appname,
+        #print self.appname
+        self.app = subprocess.Popen("ps -ef | grep -i %s " % self.appname,
                                         shell=True,
                                         stdout=subprocess.PIPE)
         self.appPid = self.app.communicate()[0].split()
-        #print self.appPid[1]
         
-#        self.process = subprocess.Popen("top -pid %s -stats pid,rsize,vsize,cpu,th,pstate,time,command -o cpu -O +rsize -s 2 -n 1 -l 2| grep -A10 PID" % self.appPid[0],
-        self.process = subprocess.Popen("top -p%s -b -n 1 | grep -A10 PID" % self.appPid[1],
+        #print self.appPid
+        
+        self.process = subprocess.Popen("top -pid %s -stats pid,rsize,vsize,cpu,th,pstate,time,command -o cpu -O +rsize -s 2 -n 1 -l 2| grep -A10 PID" % self.appPid[1],
+#        self.process = subprocess.Popen("top -p%s -b -n 1 | grep -A10 PID" % self.appPid[1],
                                         shell=True,
                                         stdout=subprocess.PIPE)
         self.appTop = self.process.communicate()[0].split('\n')
+        #print self.appTop[1]
         return self.appTop[1]
     
     def mem(self, appname):
         self.appname = appname
-        self.app = subprocess.Popen("ps -ef | grep -i %s | grep -v grep |grep -v Users| awk '{ print $2 }'" % self.appname,
+        
+        self.app = subprocess.Popen("ps -ef | grep -i %s | awk '{ print $2 }'" % self.appname,
                                         shell=True,
                                         stdout=subprocess.PIPE)
         self.appPid = self.app.communicate()[0].split('\n')
         #print self.appPid[0]
         
-#        self.meminfo = subprocess.Popen("top -pid %s -stats rsize,vsize -s 2 -n 1 -l 2| grep -A2 RSIZE" % self.appPid[0],
-        self.meminfo = subprocess.Popen("top -p%s -b -n 1| grep -A2 PID" % self.appPid[0],
+        self.meminfo = subprocess.Popen("top -pid %s -stats rsize,vsize -s 2 -n 1 -l 2| grep -A2 RSIZE" % self.appPid[0],
+#        self.meminfo = subprocess.Popen("top -p%s -b -n 1| grep -A2 PID" % self.appPid[0],
                                         shell=True,
                                         stdout=subprocess.PIPE)
         self.appMem = self.meminfo.communicate()[0].split('\n')
         #print self.appMem
-        return self.appMem            
+        return self.appMem[1]
+                
+    def threads(self, appname):
+        self.appname = appname
+        self.app = subprocess.Popen("ps -ef | grep -i %s | awk '{ print $2 }'" % self.appname,
+                                        shell=True,
+                                        stdout=subprocess.PIPE)
+        self.appPid = self.app.communicate()[0].split('\n')
+        #print self.appPid[0]
+        
+        self.threadInfo = subprocess.Popen("lsof -p %s | wc -l" % self.appPid[0],
+#        self.threadInfo = subprocess.Popen("top -p%s -b -n 1| grep -A2 PID" % self.appPid[0],
+                                        shell=True,
+                                        stdout=subprocess.PIPE)
+        self.appThreads = self.threadInfo.communicate()[0].split('\n')
+        myThreads = str(self.appThreads[0]).split()
+        
+        return myThreads[0]
         

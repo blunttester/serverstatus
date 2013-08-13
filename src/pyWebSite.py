@@ -22,7 +22,7 @@ f = open(cfgFile,'r')
 for line in f:
 	confline = line.split(':')
 	if confline[0] == 'appname':
-		appname = str(confline[1])
+		appname = str(confline[1]).split('\n')[0]
 f.close()
 	
 
@@ -36,7 +36,7 @@ def createTable(myTop):
        
         myRow.append(myTop[x].split())
         cols.append('<tr>')
-        for y in xrange(len(myRow[0])):            
+        for y in xrange(len(myRow[0])):          
             if len(myRow[x]) >= len(myRow[0]):                
                 cols.append('<th>' +  myRow[x][y] + '</th>')
          
@@ -76,10 +76,24 @@ class JsonPage(Resource):
 	#print obj
 	return str(obj)
 
+class StatusPage(Resource):
+
+    isLeaf = True
+    def render_GET(self, request):
+        srvstat = SrvStats()
+        myCpu = srvstat.cpu(appname)
+        myAppMem = srvstat.mem(appname)
+        myThreads = srvstat.threads(appname)
+        obj1 = 'Application: ' + appname + ' CPU: ' + str(myCpu) + ' MEM: ' + str(myAppMem) + ' Threads: ' + str(myThreads)
+        return  obj1
+
 resource = TablePage()
 res2 = JsonPage()
+res3 = StatusPage()
 factory = Site(resource)
 factory2 = Site(res2)
-reactor.listenTCP(8880, factory)
-reactor.listenTCP(8888, factory2)
+factory3 = Site(res3)
+reactor.listenTCP(8780, factory)
+reactor.listenTCP(8788, factory2)
+reactor.listenTCP(8789, factory3)
 reactor.run()
